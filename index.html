@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procon Map Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="icon.jpeg" type="image/jpeg">
+    
+</head>
+<body>
+    <header>
+        <h1>Procon Room Editor</h1>
+    </header>
+    <main style="display: flex; margin: 0 auto;">
+        <div id="map-editor" style="flex: 1; padding: 10px;">
+            <label for="map-size-x">マップサイズX:</label>
+            <input type="number" id="map-size-x" placeholder="Map Size X" min="5" max="15" value="15" style="display: inline-block; width: 80px;"><br>
+            <label for="map-size-y">マップサイズY:</label>
+            <input type="number" id="map-size-y" placeholder="Map Size Y" min="5" max="17" value="17" style="display: inline-block; width: 80px;"><br>
+            <div style="height: 12px;"></div>
+            <label for="block-size">マップ生成方法:</label>
+            <select id="map-generation-toggle">
+                <option value="manual">手動</option>
+                <option value="random">ランダム</option>
+            </select>
+            <div style="height: 12px;"></div>
+            <div id="random-options" style="display: none;">
+                <label for="auto-block">ブロック数:</label>
+                <input type="number" id="auto-block" placeholder="Auto Block" min="0" max="30" value="15"><br>
+                <label for="auto-point">ポイント数:</label>
+                <input type="number" id="auto-point" placeholder="Auto Point" min="0" max="30" value="14"><br>
+                <label for="auto-obstacle">自動対称：</label>
+                <input type="checkbox" id="auto-obstacle"> <br>
+            </div>
+            
+            <div id="map-container"></div>
+            <div id="palette"></div>
+        </div>
+        <div id="parameters" style="flex: 1; padding: 10px; ">
+            <label for="room-name">ルーム名:</label>
+            <img src="./image/help.svg" alt="ヘルプ" data-help-id="room-name" style="width: 15px; height: 15px; cursor: pointer;">
+            <input type="text" id="room-name" placeholder="Room Name"><br>
+            <!-- <label for="room-id">ルームID:</label>
+            <img src="./image/help.svg" alt="ヘルプ" data-help-id="room-id" style="width: 15px; height: 15px; cursor: pointer;"> -->
+            <!-- <input type="text" id="room-id" placeholder="Room ID"><br> -->
+            <label for="turn-count">ターン数:</label>
+            <img src="./image/help.svg" alt="ヘルプ" data-help-id="turn" style="width: 15px; height: 15px; cursor: pointer;">            
+           <input type="number" id="turn-count" name="turn-count" min="1" value="100">
+            <form id="cpuForm" style="padding: 10px;">
+                <label for="cpu-toggle">CPUとの対戦？</label>
+                <img src="./image/help.svg" alt="ヘルプ" data-help-id="cpu-info" style="width: 15px; height: 15px; cursor: pointer;">
+                <input type="checkbox" id="cpu-toggle"><br>
+                <div id="cpu-options">
+                    <label for="cpu-level">CPUレベル:</label>
+                    <img src="./image/help.svg" alt="ヘルプ" data-help-id="cpu-level" style="width: 15px; height: 15px; cursor: pointer;">
+                    <select id="cpu-level" name="cpu-level">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select><br>
+                    <label for="cpu-turn">CPUターン:</label>
+                    <select id="cpu-turn" name="cpu-turn">
+                        <option value="hot">Hot</option>
+                        <option value="cool">Cool</option>
+                    </select><br>
+                    <div id="cpu-detail-options" style="display: none;">
+                        <label for="cpu-advanced-option">詳細オプション:</label>
+                        <img src="./image/help.svg" alt="ヘルプ" data-help-id="cpu-detail" style="width: 15px; height: 15px; cursor: pointer;">
+                        <input type="checkbox" id="cpu-advanced-option">
+                        <div id="cpu-detail-options2" style="display: none;">
+                            <label for="cpu-option-item">敵プレイヤーを見逃す回数:</label>
+                            <img src="./image/help.svg" alt="ヘルプ" data-help-id="cpu-hotoke" style="width: 15px; height: 15px; cursor: pointer;">
+                            <input type="checkbox" id="cpu-toggle-hotoke"><br>
+                            <input type="number" id="cpu-option-hotoke" name="cpu-option-hotoke" min="0" max="100" value="3" disabled><br>
+                            
+                            <label for="cpu-option-item">アイテム取得上限:</label>
+                            <img src="./image/help.svg" alt="ヘルプ" data-help-id="cpu-item" style="width: 15px; height: 15px; cursor: pointer;">
+                             <input type="checkbox" id="cpu-toggle-item"><br>
+                            <input type="number" id="cpu-option-item" name="cpu-option-item" min="0" max="100" value="10" disabled><br>
+                            
+                            <label for="cpu-option-naname" >斜めアイテムの認識:</label>
+                            <img src="./image/help.svg" alt="ヘルプ" data-help-id="cpu-naname" style="width: 15px; height: 15px; cursor: pointer;">
+                            <input type="checkbox" id="cpu-toggle-naname"><br>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div id="button-container" style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                <button id="save-button">ダウンロード</button>
+                <button id="setting-load-button">設定をロード</button>
+            </div>
+
+            <div id="upload-to-server" style="margin-top: 20px;">
+                <label for="upload-url">アップロード先URL:</label>
+                <input type="text" id="upload-url" placeholder="https://example.com/upload" style="width: 100%;"><br>
+                <label for="upload-password">パスワード:</label>
+                <input type="password" id="upload-password" placeholder="Password" style="width: 100%;"><br>
+                <button id="upload-button" style="margin-top: 10px; display: block; margin-left: auto; margin-right: auto;">サーバにアップロード</button>
+            </div>
+        </div>
+        
+    </main>
+   
+    <div id="dynamic-help" style="display: none; position: absolute; background: #f9f9f9; border: 1px solid #ccc;  z-index: 1000;">
+        <p id="help-text">ここにヘルプ内容が表示されます。</p>
+    </div>
+    <pre id="jsonOutput"></pre>
+    <footer>
+        <p>&copy; 2024 Procon Map Editor</p>
+    </footer>
+    <script>
+        
+
+        
+    </script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
